@@ -1,73 +1,43 @@
-version: '3.9'
 
-# Services
+   # Services
 services:
 
-  # PHP FPM Service
-  php:
-    build:
-      dockerfile: ./docker/php/dockerfile
-      context: .
-    volumes:
-      - './:/var/www/html'
-    depends_on:
-      - mariadb
-    container_name: prog_m9_php
 
 
-  # Nginx Service
-  nginx:
-    image: nginx:latest
-    container_name : prog_m9_nginx
-    ports:
-    - EXTERN:INTERN
-      - 8080:443
-    links:
-      - 'php'
-    volumes:
-      - './:/var/www/html'
-      - './docker/nginx:/etc/nginx/conf.d'
-    depends_on:
-      - php
 
-  # MariaDB Service
-  mariadb:
-    image: mariadb:latest
-    container_name: prog_m9_mariaDB
-    environment:
-      MYSQL_DATABASE: '${DB_NAME}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
-    ports:
-      - 3309:3306
-    volumes:
-      - './docker/mysqldata:/var/lib/mysql'
-      
-  # php myadmin in an external image
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: prog_m9_phpmyadmin
-    environment:
-      PMA_HOST: '${DB_HOST}'
-      PMA_USER: '${DB_USERNAME}'
-      PMA_PASSWORD: '${DB_PASSWORD}'
-    ports:
-      - 8805:443
+   # MariaDB Service
+   mariadb:
+      image: mariadb:latest
+      container_name: prog_m9_mariaDB
+      environment:
+         MYSQL_DATABASE: '${DB_NAME}'
+         MYSQL_USER: '${DB_USERNAME}'
+         MYSQL_PASSWORD: '${DB_PASSWORD}'
+         MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
 
-wordpress:
+
+   # php myadmin in an external image
+   phpmyadmin:
+      image: phpmyadmin:latest
+      container_name: prog_m9_phpmyadmin
+      environment:
+         PMA_HOST: '${DB_HOST}'
+         PMA_USER: '${DB_USERNAME}'
+         PMA_PASSWORD: '${DB_PASSWORD}'
+      ports:
+         - 8805:443
+
+   wordpress:
       image: wordpress:latest
       container_name: prog_m9_wordpress
       environment:
-        WORDPRESS_DB_HOST: '${DB_HOST}'
-        WORDPRESS_DB_NAME: '${DB_NAME}'
-        WORDPRESS_DB_USER: '${DB_USERNAME}'
-        WORDPRESS_DB_PASSWORD: '${DB_PASSWORD}'
+         WORDPRESS_DB_HOST: '${DB_HOST}'
+         WORDPRESS_DB_NAME: '${DB_NAME}'
+         WORDPRESS_DB_USER: '${DB_USERNAME}'
+         WORDPRESS_DB_PASSWORD: '${DB_PASSWORD}'
       volumes:
-      - ./themes:/var/www/html/wp-content/themes
-      - ./plugins:/var/www/html/wp-content/plugins
-      - ./uploads:/var/www/html/wp-content/uploads
+         - ./themes:/var/www/html/wp-content/themes
+         - ./plugins:/var/www/html/wp-content/plugins
+         - ./uploads:/var/www/html/wp-content/uploads
 
-# Volumes
-volumes:
-  mysqldata:
+
